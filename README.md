@@ -1,1 +1,1 @@
-# picnic
+A compilation of simple programs

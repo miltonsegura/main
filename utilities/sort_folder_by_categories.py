@@ -24,6 +24,9 @@ def main(loc=None, excluded=[], silent=False):
         OSError: It wasn't possible to create a folder
         PermissionError: A file couldn't be moved or overwritten.
     """
+    for default_exclude in ['desktop.ini']:
+        if default_exclude not in excluded:
+            excluded.append(default_exclude)
 
     # Set default parameters
     if loc is None:
@@ -44,16 +47,21 @@ def main(loc=None, excluded=[], silent=False):
                                         'docx', 'pptx', 'xlsx', 'pdf', 'rtf',
                                         'ppsx', 'csv', 'vcf', 'txt', 'text'},
                   'Images'           : {'jpg', 'jpeg', 'png', 'gif', 'psd',
-                                        'psb', 'ai', 'svg', 'dng'},
-                  'Videos'           : {'mpg', 'mp4', 'mkv', 'srt', 'wmv'
-                                        'mov'},
-                  'Audio'            : {'mp3', 'wma'},
+                                        'psb', 'ai', 'svg', 'dng', 'webp'},
+                  'Videos'           : {'mpg', 'mp4', 'mkv', 'srt', 'wmv',
+                                        'mov', 'avi', 'webm'},
+                  'Audio'            : {'mp3', 'wma', 'flac', 'audio', 'eac3',
+                                        'm2ts', 'dts', 'ogg'},
                   'Programming'      : {'py', 'pyc', 'pyo', 'pyw', 'pl', 'v',
-                                        'c', 'dat', 'ecf', 'unitypackage'},
+                                        'c', 'dat', 'ecf', 'unitypackage',
+                                        'mobileprovision'},
                   'Executables'      : {'exe', 'msi', 'apk', 'bat', 'jar',
-                                        'jnlp', 'swf', 'reg', 'vbox-extpack'},
+                                        'jnlp', 'swf', 'reg', 'vbox-extpack',
+                                        'appx'},
                   'Compressed'       : {'rar', 'zip', 'iso', 'tgz', 'gz', '7z',
-                                        'ova'}}
+                                        'ova', 'img', 'dmg', 'xz', 'asc'},
+                  'Other'            : {'cfg', 'rpa', 'rpy', 'ini', 'xml',
+                                        'duf'}}
 
     summary = dict((category, []) for category in categories)
     filenames = (filename for filename in os.listdir(loc)
@@ -86,8 +94,8 @@ def main(loc=None, excluded=[], silent=False):
                         summary[category].append(filename)
                     except PermissionError:
                         print('PermissionError '
-                              '({}):'.format(os.stat(src).st_mode),
-                              src)
+                              '({}):'.format(os.stat(src_path).st_mode),
+                              src_path)
                     break
 
     # Print a summary at the end
@@ -113,5 +121,5 @@ if __name__ == '__main__':
              silent=silent)
     else:
         main(loc=sys.argv[1],
-             exclude=sys.argv[2:],
+             excluded=sys.argv[2:],
              silent=silent)
